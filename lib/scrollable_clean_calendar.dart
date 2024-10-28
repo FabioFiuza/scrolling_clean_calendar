@@ -17,6 +17,12 @@ class ScrollableCleanCalendar extends StatefulWidget {
   /// Scroll controller
   final ScrollController? scrollController;
 
+  /// Reverse to start from the end
+  final bool reverse;
+
+  /// Customizing physics on need
+  final ScrollPhysics? physics;
+
   /// If is to show or not the weekdays in calendar
   final bool showWeekdays;
 
@@ -89,6 +95,8 @@ class ScrollableCleanCalendar extends StatefulWidget {
   const ScrollableCleanCalendar({
     this.locale = 'en',
     this.scrollController,
+    this.reverse = false,
+    this.physics,
     this.showWeekdays = true,
     this.layout,
     this.calendarCrossAxisSpacing = 4,
@@ -147,6 +155,8 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
   Widget listViewCalendar() {
     return ListView.separated(
       controller: widget.scrollController,
+      reverse: widget.reverse,
+      physics: widget.physics,
       padding: widget.padding ??
           const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
       separatorBuilder: (_, __) =>
@@ -162,6 +172,8 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
 
   Widget scrollablePositionedListCalendar() {
     return ScrollablePositionedList.separated(
+      reverse: widget.reverse,
+      physics: widget.physics,
       itemScrollController: widget.calendarController.itemScrollController,
       padding: widget.padding ??
           const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
