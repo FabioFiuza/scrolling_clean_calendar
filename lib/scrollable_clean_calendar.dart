@@ -163,7 +163,9 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
           SizedBox(height: widget.spaceBetweenCalendars),
       itemCount: widget.calendarController.months.length,
       itemBuilder: (context, index) {
-        final month = widget.calendarController.months[index];
+        final month = widget.calendarController.months[widget.reverse
+            ? widget.calendarController.months.length - index - 1
+            : index];
 
         return childCollumn(month);
       },
@@ -181,7 +183,9 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
           SizedBox(height: widget.spaceBetweenCalendars),
       itemCount: widget.calendarController.months.length,
       itemBuilder: (context, index) {
-        final month = widget.calendarController.months[index];
+        final month = widget.calendarController.months[widget.reverse
+            ? widget.calendarController.months.length - index - 1
+            : index];
 
         return childCollumn(month);
       },
