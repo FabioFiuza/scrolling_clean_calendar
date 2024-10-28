@@ -119,6 +119,7 @@ class ScrollableCleanCalendar extends StatefulWidget {
     this.dayTextStyle,
     this.dayAspectRatio,
     this.dayRadius = 6,
+    super.key,
     required this.calendarController,
   }) : assert(layout != null ||
             (monthBuilder != null &&
@@ -154,6 +155,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
 
   Widget listViewCalendar() {
     return ListView.separated(
+      key: widget.key,
       controller: widget.scrollController,
       reverse: widget.reverse,
       physics: widget.physics,
@@ -174,6 +176,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
 
   Widget scrollablePositionedListCalendar() {
     return ScrollablePositionedList.separated(
+      key: widget.key,
       reverse: widget.reverse,
       physics: widget.physics,
       itemScrollController: widget.calendarController.itemScrollController,
