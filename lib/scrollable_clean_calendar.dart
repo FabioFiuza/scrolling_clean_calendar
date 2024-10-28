@@ -20,6 +20,9 @@ class ScrollableCleanCalendar extends StatefulWidget {
   /// Reverse to start from the end
   final bool reverse;
 
+  /// List shrink wrap
+  final bool shrinkWrap;
+
   /// Customizing physics on need
   final ScrollPhysics? physics;
 
@@ -96,6 +99,7 @@ class ScrollableCleanCalendar extends StatefulWidget {
     this.locale = 'en',
     this.scrollController,
     this.reverse = false,
+    this.shrinkWrap = false,
     this.physics,
     this.showWeekdays = true,
     this.layout,
@@ -158,6 +162,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
       key: widget.key,
       controller: widget.scrollController,
       reverse: widget.reverse,
+      shrinkWrap: widget.shrinkWrap,
       physics: widget.physics,
       padding: widget.padding ??
           const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
@@ -178,6 +183,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
     return ScrollablePositionedList.separated(
       key: widget.key,
       reverse: widget.reverse,
+      shrinkWrap: widget.shrinkWrap,
       physics: widget.physics,
       itemScrollController: widget.calendarController.itemScrollController,
       padding: widget.padding ??
