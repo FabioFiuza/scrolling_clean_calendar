@@ -17,6 +17,15 @@ class ScrollableCleanCalendar extends StatefulWidget {
   /// Scroll controller
   final ScrollController? scrollController;
 
+  /// Reverse to start from the end
+  final bool reverse;
+
+  /// List shrink wrap
+  final bool shrinkWrap;
+
+  /// Customizing physics on need
+  final ScrollPhysics? physics;
+
   /// If is to show or not the weekdays in calendar
   final bool showWeekdays;
 
@@ -89,6 +98,9 @@ class ScrollableCleanCalendar extends StatefulWidget {
   const ScrollableCleanCalendar({
     this.locale = 'en',
     this.scrollController,
+    this.reverse = false,
+    this.shrinkWrap = false,
+    this.physics,
     this.showWeekdays = true,
     this.layout,
     this.calendarCrossAxisSpacing = 4,
@@ -111,6 +123,7 @@ class ScrollableCleanCalendar extends StatefulWidget {
     this.dayTextStyle,
     this.dayAspectRatio,
     this.dayRadius = 6,
+    super.key,
     required this.calendarController,
   }) : assert(layout != null ||
             (monthBuilder != null &&
@@ -146,14 +159,20 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
 
   Widget listViewCalendar() {
     return ListView.separated(
+      key: widget.key,
       controller: widget.scrollController,
+      reverse: widget.reverse,
+      shrinkWrap: widget.shrinkWrap,
+      physics: widget.physics,
       padding: widget.padding ??
           const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
       separatorBuilder: (_, __) =>
           SizedBox(height: widget.spaceBetweenCalendars),
       itemCount: widget.calendarController.months.length,
       itemBuilder: (context, index) {
-        final month = widget.calendarController.months[index];
+        final month = widget.calendarController.months[widget.reverse
+            ? widget.calendarController.months.length - index - 1
+            : index];
 
         return childCollumn(month);
       },
@@ -162,6 +181,10 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
 
   Widget scrollablePositionedListCalendar() {
     return ScrollablePositionedList.separated(
+      key: widget.key,
+      reverse: widget.reverse,
+      shrinkWrap: widget.shrinkWrap,
+      physics: widget.physics,
       itemScrollController: widget.calendarController.itemScrollController,
       padding: widget.padding ??
           const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
@@ -169,7 +192,9 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
           SizedBox(height: widget.spaceBetweenCalendars),
       itemCount: widget.calendarController.months.length,
       itemBuilder: (context, index) {
-        final month = widget.calendarController.months[index];
+        final month = widget.calendarController.months[widget.reverse
+            ? widget.calendarController.months.length - index - 1
+            : index];
 
         return childCollumn(month);
       },

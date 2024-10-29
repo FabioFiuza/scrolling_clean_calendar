@@ -30,6 +30,7 @@ class WeekdaysWidget extends StatelessWidget {
 
     return GridView.count(
       crossAxisCount: DateTime.daysPerWeek,
+      controller: ScrollController(keepScrollOffset: false),
       shrinkWrap: true,
       childAspectRatio: aspectRatio ?? 1.0,
       physics: const NeverScrollableScrollPhysics(),

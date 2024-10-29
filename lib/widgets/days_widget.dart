@@ -65,6 +65,7 @@ class DaysWidget extends StatelessWidget {
     return GridView.count(
       crossAxisCount: DateTime.daysPerWeek,
       physics: const NeverScrollableScrollPhysics(),
+      controller: ScrollController(keepScrollOffset: false),
       addRepaintBoundaries: false,
       padding: EdgeInsets.zero,
       crossAxisSpacing: calendarCrossAxisSpacing,
