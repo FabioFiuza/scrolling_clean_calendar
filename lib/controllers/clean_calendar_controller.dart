@@ -10,6 +10,14 @@ class CleanCalendarController extends ChangeNotifier {
   /// Obrigatory: The maximum date to show
   final DateTime maxDate;
 
+  /// Whether to hide entire weeks if any days in them
+  /// fall before the [minDate].
+  final bool hideWeeksOutOfMinDate;
+
+  /// Whether to hide entire weeks if any days in them
+  /// fall after the [maxDate].
+  final bool hideWeeksOutOfMaxDate;
+
   /// If the range is enabled
   final bool rangeMode;
 
@@ -59,6 +67,8 @@ class CleanCalendarController extends ChangeNotifier {
     this.onPreviousMinDateTapped,
     this.weekdayStart = DateTime.monday,
     this.initialFocusDate,
+    this.hideWeeksOutOfMinDate = false,
+    this.hideWeeksOutOfMaxDate = false,
   })  : assert(weekdayStart <= DateTime.sunday),
         assert(weekdayStart >= DateTime.monday) {
     final x = weekdayStart - 1;
