@@ -32,5 +32,24 @@ extension DateUtilsExtensions on DateTime {
   bool isSameDay(DateTime other) =>
       year == other.year && month == other.month && day == other.day;
 
+  bool isSameMonth(DateTime other) =>
+      year == other.year && month == other.month;
+
   DateTime removeTime() => DateTime(year, month, day);
+
+  DateTime firstDayOfMonth() => DateTime(year, month, 1);
+
+  DateTime lastDayOfMonth() => DateTime(year, month + 1, 0);
+
+  /// Returns the first day of the week based on the provided [weekdayStart].
+  DateTime firstDayOfWeek(int weekdayStart) {
+    int daysToSubtract = (weekday - weekdayStart) % 7;
+    return subtract(Duration(days: daysToSubtract));
+  }
+
+  /// Returns the last day of the week based on the provided [weekdayEnd].
+  DateTime lastDayOfWeek(int weekdayEnd) {
+    int daysToAdd = (weekdayEnd - weekday) % 7;
+    return add(Duration(days: daysToAdd));
+  }
 }

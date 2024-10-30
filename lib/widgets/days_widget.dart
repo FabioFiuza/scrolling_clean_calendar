@@ -43,24 +43,11 @@ class DaysWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Start weekday - Days per week - The first weekday of this month
-    // 7 - 7 - 1 = -1 = 1
-    // 6 - 7 - 1 = -2 = 2
+    final firstVisibleDay = _getFirstVisibleDay();
+    final lastVisibleDay = _getLastVisibleDay();
+    final startPosition = _calculateStartPosition(firstVisibleDay);
 
-    // What it means? The first weekday does not change, but the start weekday have changed,
-    // so in the layout we need to change where the calendar first day is going to start.
-    int monthPositionStartDay = (cleanCalendarController.weekdayStart -
-            DateTime.daysPerWeek -
-            DateTime(month.year, month.month).weekday)
-        .abs();
-    monthPositionStartDay = monthPositionStartDay > DateTime.daysPerWeek
-        ? monthPositionStartDay - DateTime.daysPerWeek
-        : monthPositionStartDay;
-
-    final start = monthPositionStartDay == 7 ? 0 : monthPositionStartDay;
-
-    // If the monthPositionStartDay is equal to 7, then in this layout logic will cause a trouble, beacause it will
-    // have a line in blank and in this case 7 is the same as 0.
+    final numberOfDays = lastVisibleDay.day - firstVisibleDay.day + 1;
 
     return GridView.count(
       crossAxisCount: DateTime.daysPerWeek,
@@ -71,11 +58,13 @@ class DaysWidget extends StatelessWidget {
       mainAxisSpacing: calendarMainAxisSpacing,
       shrinkWrap: true,
       childAspectRatio: aspectRatio ?? 1.0,
-      children: List.generate(
-          DateTime(month.year, month.month + 1, 0).day + start, (index) {
-        if (index < start) return const SizedBox.shrink();
-        final day = DateTime(month.year, month.month, (index + 1 - start));
-        final text = (index + 1 - start).toString();
+      children: List.generate(numberOfDays + startPosition, (index) {
+        if (index < startPosition) return const SizedBox.shrink();
+
+        final dayOfMonth = firstVisibleDay.day + (index - startPosition);
+        final day = DateTime(month.year, month.month, dayOfMonth);
+
+        final text = dayOfMonth.toString();
 
         bool isSelected = false;
 
@@ -135,6 +124,70 @@ class DaysWidget extends StatelessWidget {
         );
       }),
     );
+  }
+
+  DateTime _getFirstVisibleDay() {
+    if (!_shouldShowFirstDay()) return month.firstDayOfMonth();
+
+    final min = cleanCalendarController.minDate.removeTime();
+    final firstDayOfWeek =
+        min.firstDayOfWeek(cleanCalendarController.weekdayStart);
+
+    return firstDayOfWeek.isSameMonth(month)
+        ? firstDayOfWeek
+        : month.firstDayOfMonth();
+  }
+
+  bool _shouldShowFirstDay() {
+    return cleanCalendarController.hideWeeksOutOfMinDate &&
+        cleanCalendarController.minDate.isSameMonth(month);
+  }
+
+  DateTime _getLastVisibleDay() {
+    if (!_shouldShowLastDay()) return month.lastDayOfMonth();
+
+    final max = cleanCalendarController.maxDate.removeTime();
+    final lastDayOfWeek = max.lastDayOfWeek(cleanCalendarController.weekdayEnd);
+
+    return lastDayOfWeek.isSameMonth(month)
+        ? lastDayOfWeek
+        : month.lastDayOfMonth();
+  }
+
+  bool _shouldShowLastDay() {
+    return cleanCalendarController.hideWeeksOutOfMaxDate &&
+        cleanCalendarController.maxDate.isSameMonth(month);
+  }
+
+  int _calculateStartPosition(DateTime firstVisibleDay) {
+    final shouldHideOutOfRange = cleanCalendarController.hideWeeksOutOfMinDate;
+    // Check if the calendar is starting from a custom day (not the 1st)
+    final isStartingFromCustomDay = firstVisibleDay.day != 1;
+
+    final weekdayToUse = (shouldHideOutOfRange && isStartingFromCustomDay)
+        ? firstVisibleDay.weekday
+        : DateTime(month.year, month.month).weekday;
+
+    // Calculate the starting position of the first day in the calendar grid.
+    // Formula: Start weekday - Days per week - Weekday to use
+    // Examples:
+    // 7 (Start weekday) - 7 (Days per week) - 1 (Weekday to use) = -1 -> abs() = 1
+    // 6 - 7 - 1 = -2 -> abs() = 2
+
+    // What it means? The first weekday does not change, but the start weekday has changed,
+    // so in the layout, we need to adjust where the calendar's first day will start.
+    final position = (cleanCalendarController.weekdayStart -
+            DateTime.daysPerWeek -
+            weekdayToUse)
+        .abs();
+
+    if (position > DateTime.daysPerWeek) {
+      return position - DateTime.daysPerWeek;
+    }
+
+    // If the position is equal to 7, then in this layout logic will cause a trouble, because it will
+    // have a line in blank and in this case 7 is the same as 0.
+    return position == 7 ? 0 : position;
   }
 
   Widget _pattern(BuildContext context, DayValues values) {
